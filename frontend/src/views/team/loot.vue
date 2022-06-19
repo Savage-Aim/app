@@ -124,7 +124,7 @@ import History from '@/components/loot/history.vue'
 import ItemDropdown from '@/components/item_dropdown.vue'
 import NeedRaidItemBox from '@/components/loot/need_raid_item_box.vue'
 import NeedTomeItemBox from '@/components/loot/need_tome_item_box.vue'
-import TeamNav from '@/components/team_nav.vue'
+import TeamNav from '@/components/team/nav.vue'
 import {
   GreedGear,
   GreedItem,
@@ -167,7 +167,7 @@ export default class TeamLoot extends SavageAimMixin {
 
   // Flag stating whether the currently logged user can edit the Team
   get editable(): boolean {
-    return this.team.members.find((teamMember: TeamMember) => teamMember.character.user_id === this.$store.state.user.id)?.lead ?? false
+    return this.team.members.find((teamMember: TeamMember) => teamMember.character.user_id === this.$store.state.user.id)?.permissions.loot_manager ?? false
   }
 
   get url(): string {

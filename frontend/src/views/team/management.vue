@@ -23,8 +23,10 @@
         </div>
       </div>
 
-      <div class="columns is-multiline is-desktop">
-        <TeamMemberCard v-for="tm in team.members" :key="tm.id" :team-id="team.id" :details="tm" :max-item-level="team.tier.max_item_level" :editable="editable" v-on:reload="() => { fetchTeam(true) }" />
+      <div class="columns">
+        <div class="column is-half">
+          <TeamPermissions :team="team" :editable="editable" />
+        </div>
       </div>
     </template>
   </div>
@@ -32,20 +34,27 @@
 
 <script lang="ts">
 import { Component } from 'vue-property-decorator'
-import TeamMemberCard from '@/components/team/member_card.vue'
 import TeamNav from '@/components/team/nav.vue'
+import TeamPermissions from '@/components/team/permissions.vue'
+import { TeamUpdateErrors } from '@/interfaces/responses'
 import Team from '@/interfaces/team'
 import TeamMember from '@/interfaces/team_member'
 import SavageAimMixin from '@/mixins/savage_aim_mixin'
 
 @Component({
   components: {
-    TeamMemberCard,
     TeamNav,
+    TeamPermissions,
   },
 })
-export default class TeamView extends SavageAimMixin {
+export default class TeamManagement extends SavageAimMixin {
+  errors: TeamUpdateErrors = {}
+
+  firstLoad = true
+
   loading = true
+
+  teamLeadId!: number
 
   team!: Team
 
@@ -70,8 +79,9 @@ export default class TeamView extends SavageAimMixin {
         // Parse the JSON into a team and save it
         this.team = (await response.json()) as Team
         this.loading = false
+        this.firstLoad = false
         if (reload) this.$forceUpdate()
-        document.title = `${this.team.name} - Savage Aim`
+        document.title = `Management - ${this.team.name} - Savage Aim`
       }
       else {
         super.handleError(response.status)
@@ -89,5 +99,4 @@ export default class TeamView extends SavageAimMixin {
 </script>
 
 <style lang="scss">
-
 </style>
